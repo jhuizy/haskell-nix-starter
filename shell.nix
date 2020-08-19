@@ -7,15 +7,11 @@ in
 pkgs.mkShell {
   buildInputs = with pkgs; project.env.nativeBuildInputs ++ [
     haskellPackages.cabal-install
+    haskellPackages.ghcid
     haskellPackages.ghcide
     haskellPackages.cabal2nix
     haskellPackages.hlint
     haskellPackages.brittany
-    haskellPackages.cabal2nix
-    haskellPackages.ghcid
-    coreutils
-    gitAndTools.pre-commit
-    tesseract4
   ];
   shellHook = ''
     export NIX_GHC="`which ghc`"
