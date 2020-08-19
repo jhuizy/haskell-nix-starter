@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Main where
+module App where
 
 import           Web.Scotty
 import           Data.Text

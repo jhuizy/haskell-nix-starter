@@ -1,21 +1,21 @@
-{ pkgs ? import <nixpkgs> { } }:
 let
-  ghc = pkgs.ghc;
-  project = pkgs.haskellPackages.callPackage ./nix/default.nix { };
-  ghcide = (import (builtins.fetchTarball "https://github.com/cachix/ghcide-nix/tarball/master") {}).ghcide-ghc883;
-
+  sources = import ./nix/sources.nix;
+  pkgs = import sources.nixpkgs { };
+  gitignoreSource = (import sources."gitignore.nix" { inherit (pkgs) lib;}).gitignoreSource;
+  project = pkgs.haskellPackages.callCabal2nix "budget" (gitignoreSource ./.) { };
 in
-pkgs.stdenv.mkDerivation {
-  name = "shell";
+pkgs.mkShell {
   buildInputs = with pkgs; project.env.nativeBuildInputs ++ [
     haskellPackages.cabal-install
-    ghcide
+    haskellPackages.ghcide
     haskellPackages.cabal2nix
     haskellPackages.hlint
     haskellPackages.brittany
     haskellPackages.cabal2nix
     haskellPackages.ghcid
     coreutils
+    gitAndTools.pre-commit
+    tesseract4
   ];
   shellHook = ''
     export NIX_GHC="`which ghc`"
